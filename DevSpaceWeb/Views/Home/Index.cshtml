@@ -1,0 +1,70 @@
+﻿@model List<User>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div id="renderUsers"></div>
+        </div>
+        <div class="col-9">
+            <div class="history" >
+                <div id="renderMessages"></div>
+            </div>
+            <hr />
+            @if (ViewBag.ChatId != null)
+            {
+                <form asp-action="SaveMessage">
+                    <input type="hidden" name="chatId" value="@ViewBag.ChatId" />
+                    <div class="mb-3">
+                        <textarea name="messageText" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+
+            $.get('@Url.Action("GetUsers", "Home")', function (content) {
+                $("#renderUsers").html(content);
+            });
+
+            $.get('@Url.Action("GetMessages", "Home")', {
+                chatId: '@ViewBag.ChatId'
+            }, function (content) {
+                $("#renderMessages").html(content);
+            });
+
+            setInterval(function(){
+                $.get('@Url.Action("GetUsers", "Home")', function (content) {
+                    $("#renderUsers").html(content);
+                });
+                $.get('@Url.Action("GetMessages", "Home")', {
+                    chatId: '@ViewBag.ChatId'
+                }, function (content) {
+                    $("#renderMessages").html(content);
+                });
+            }, 3000);
+
+        });
+    </script>
+    <style>
+        .history{
+            height: 60vh;
+            overflow-y: scroll;
+            padding-right: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+    </style>
+}

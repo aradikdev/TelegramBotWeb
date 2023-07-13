@@ -1,0 +1,16 @@
+﻿@model List<User>
+
+<div class="list-group">
+    @foreach (User user in Model)
+    {
+        var isDisabled = (user.IsActive) ? "" : "Disabled" ;
+        <a 
+            asp-action="Index" 
+            asp-controller="Home" 
+            asp-route-id="@user.ChatId" 
+            id="userid-@user.Id"
+            class="list-group-item list-group-item-action @isDisabled">
+            @user.Name
+        </a>
+    }
+</div>
